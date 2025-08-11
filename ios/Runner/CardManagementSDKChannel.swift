@@ -8,11 +8,18 @@ class CardManagementSDKChannel {
     static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(name: "com.example.card_sdk", binaryMessenger: registrar.messenger())
 
-        // Initialize the SDK
-        initializeSDK()
+//        // Initialize the SDK
+//        initializeSDK()
+
+        // Optionally initialize SDK if configuration is already valid
+        if SDKConfiguration.isConfigurationValid() {
+            initializeSDK()
+        }
 
         channel.setMethodCallHandler { (call: FlutterMethodCall, result: @escaping FlutterResult) in
             switch call.method {
+            case "configureSDK":
+                self.configureSDK(call, result)
             case "printMessage":
                 self.printMessage(call, result)
             case "addTwoNumbers":
@@ -33,27 +40,79 @@ class CardManagementSDKChannel {
         }
     }
 
-    private static func initializeSDK() {
-        // Use configuration values
-        let rootUrl = SDKConfiguration.rootUrl
-        let cardIdentifierId = SDKConfiguration.cardIdentifierId
-        let cardIdentifierType = SDKConfiguration.cardIdentifierType
-        let bankCode = SDKConfiguration.bankCode
+    // MARK: - Configure SDK (called from Flutter)
+    private static func configureSDK(_ call: FlutterMethodCall, _ result: @escaping FlutterResult) {
+            guard let args = call.arguments as? [String: Any] else {
+                result(FlutterError(code: "INVALID_ARGUMENTS", message: "Expected configuration map", details: nil))
+                return
+            }
 
-        // Create a simple token fetchable implementation
+            // Required fields
+            guard let rootUrl = args["rootUrl"] as? String,
+                  let cardIdentifierId = args["cardIdentifierId"] as? String,
+                  let cardIdentifierType = args["cardIdentifierType"] as? String,
+                  let bankCode = args["bankCode"] as? String,
+                  let authToken = args["authToken"] as? String else {
+                result(FlutterError(code: "INVALID_ARGUMENTS", message: "Missing configuration keys", details: nil))
+                return
+            }
+
+            // Assign to SDKConfiguration
+            SDKConfiguration.rootUrl = rootUrl
+            SDKConfiguration.cardIdentifierId = cardIdentifierId
+            SDKConfiguration.cardIdentifierType = cardIdentifierType
+            SDKConfiguration.bankCode = bankCode
+            SDKConfiguration.authToken = authToken
+
+            // Re-initialize the SDK with new configuration
+            initializeSDK()
+
+            result(["success": true, "message": "SDK configured successfully"])
+        }
+
+    // MARK: - Initialize SDK helper
+    private static func initializeSDK() {
+        // safety: reset existing instance
+        sdk = nil
+
+        // Token fetchable will use SDKConfiguration.authToken
         let tokenFetchable = SimpleTokenFetchable()
 
-        // Initialize the SDK
         sdk = NICardManagementAPI(
-            rootUrl: rootUrl,
-            cardIdentifierId: cardIdentifierId,
-            cardIdentifierType: cardIdentifierType,
-            bankCode: bankCode,
+            rootUrl: SDKConfiguration.rootUrl,
+            cardIdentifierId: SDKConfiguration.cardIdentifierId,
+            cardIdentifierType: SDKConfiguration.cardIdentifierType,
+            bankCode: SDKConfiguration.bankCode,
             tokenFetchable: tokenFetchable,
             extraHeadersProvider: nil,
             logger: nil
         )
+
+        print("NICardManagementAPI initialized with rootUrl: \(SDKConfiguration.rootUrl)")
     }
+
+// Old code commit out
+//    private static func initializeSDK() {
+//        // Use configuration values
+//        let rootUrl = SDKConfiguration.rootUrl
+//        let cardIdentifierId = SDKConfiguration.cardIdentifierId
+//        let cardIdentifierType = SDKConfiguration.cardIdentifierType
+//        let bankCode = SDKConfiguration.bankCode
+//
+//        // Create a simple token fetchable implementation
+//        let tokenFetchable = SimpleTokenFetchable()
+//
+//        // Initialize the SDK
+//        sdk = NICardManagementAPI(
+//            rootUrl: rootUrl,
+//            cardIdentifierId: cardIdentifierId,
+//            cardIdentifierType: cardIdentifierType,
+//            bankCode: bankCode,
+//            tokenFetchable: tokenFetchable,
+//            extraHeadersProvider: nil,
+//            logger: nil
+//        )
+//    }
 
     private static func printMessage(_ call: FlutterMethodCall, _ result: @escaping FlutterResult) {
         if let args = call.arguments as? [String: Any],

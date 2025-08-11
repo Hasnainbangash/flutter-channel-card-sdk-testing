@@ -177,12 +177,58 @@ class _HomeViewState extends State<HomeView> {
   final TextEditingController _oldPinController = TextEditingController();
   final TextEditingController _newPinController = TextEditingController();
 
+  bool _sdkConfigured = false;
+  bool _isConfiguring = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _configureSDK(); // call right away
+  }
+
   @override
   void dispose() {
     _pinController.dispose();
     _oldPinController.dispose();
     _newPinController.dispose();
     super.dispose();
+  }
+
+  Future<void> _configureSDK() async {
+    setState(() {
+      _isConfiguring = true;
+    });
+
+    // TODO: replace these values with real runtime values from your secure storage / server
+    final config = {
+      "rootUrl": "https://api.example.com",
+      "cardIdentifierId": "123456",
+      "cardIdentifierType": "CARD",
+      "bankCode": "BANK01",
+      // IMPORTANT: pass the raw token only, NOT "Bearer <token>"
+      "authToken": "eyJhbGciOi...your_jwt_here..."
+    };
+
+    try {
+      final result = await _channel.invokeMethod('configureSDK', config);
+      if (result is Map && result['success'] == true) {
+        setState(() {
+          _sdkConfigured = true;
+        });
+        _showSnackBar(result['message'] ?? "SDK configured");
+      } else {
+        _showSnackBar("Failed to configure SDK", isError: true);
+      }
+    } on PlatformException catch (e) {
+      _showSnackBar("Configuration error: ${e.message}", isError: true);
+    } catch (e) {
+      _showSnackBar("Unexpected error: $e", isError: true);
+    } finally {
+      setState(() {
+        _isConfiguring = false;
+      });
+    }
   }
 
   @override
