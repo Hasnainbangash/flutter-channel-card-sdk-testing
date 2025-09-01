@@ -202,12 +202,12 @@ class _HomeViewState extends State<HomeView> {
 
     // TODO: replace these values with real runtime values from your secure storage / server
     final config = {
-      "rootUrl": "https://api.example.com",
-      "cardIdentifierId": "123456",
-      "cardIdentifierType": "CARD",
-      "bankCode": "BANK01",
+      "rootUrl": "https://apiuat.za.network.global/sdk/v2",
+      "cardIdentifierId": "44135857194304827113",
+      "cardIdentifierType": "EXID",
+      "bankCode": "ABSA",
       // IMPORTANT: pass the raw token only, NOT "Bearer <token>"
-      "authToken": "eyJhbGciOi...your_jwt_here..."
+      "authToken": "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJhVS1uNnVldXVNNWpfSU5XU1htcVc0NVBLY1psaDE3d2Q0WDRuRVFNVktFIn0.eyJleHAiOjE3NTY3MjY2NTAsImlhdCI6MTc1NjcyNDg1MCwianRpIjoiNjE5YjdjMjAtMDgwZS00NjcxLWJmNmEtM2RiYWI2YzU2MGI3IiwiaXNzIjoiaHR0cHM6Ly8xMC4yMTMuMzUuNzQvYXV0aC9yZWFsbXMvTkktTm9uUHJvZCIsInN1YiI6ImZjNmQ3ZTk5LTQwYmMtNDVmZS05NGNlLTU4NjU3ZGNlODU3NCIsInR5cCI6IkJlYXJlciIsImF6cCI6ImM5ZTJlODcwLTZhNDAtNDQ0Zi04ZDFmLTJhODYwMjJiNmNmNTQ0NjY2NCIsInNjb3BlIjoicHJvZmlsZSBlbWFpbCIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiY2xpZW50SWQiOiJjOWUyZTg3MC02YTQwLTQ0NGYtOGQxZi0yYTg2MDIyYjZjZjU0NDY2NjQiLCJyb2xlIjoiYmFuayIsInJvdXRlX2lkIjoiQVBJQyIsIm9yZ19pZCI6IkFCU0EiLCJpc1BjaURzcyI6ImZhbHNlIiwicHJlZmVycmVkX3VzZXJuYW1lIjoic2VydmljZS1hY2NvdW50LWM5ZTJlODcwLTZhNDAtNDQ0Zi04ZDFmLTJhODYwMjJiNmNmNTQ0NjY2NCIsIm9yZ19jb2RlIjoiMzQzIn0.DtpaGb3kWCirVW22QUFx3psahOShJ-6TT1fNBreiSaCpOygwu_sY0hGlGwxVbkF7B6Ag83QDsVQJQv6_OXMeJ0raWWsYgsaecF5-ANr6AvuKPYi48Z_lAXt8mkDf9hxV47YOlXk_mNJpz5GKH-bmX8ngNwdE_-yPWAHXajnNJba1zavcrb9bpg9KWAt0Ic8C_EvIyp7N6I0aHmhXiU_2FJpbcvNBbBILwjJn1cjO0nHPhRqBZagq4AQNZ9n3t10CkoSkLq3-iIwDXkNlxcIjHL9kn97XgA5wJQXkmzTwGXLBtH9Am7wI7_h85pkHGOgcLV8JE87cButSuhJTcCXULQ"
     };
 
     try {

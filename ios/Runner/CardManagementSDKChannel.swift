@@ -435,7 +435,7 @@ class SimpleTokenFetchable: NICardManagementTokenFetchable {
         let accessToken = AccessToken(
             value: tokenString,
             type: "Bearer", // Optional: specify token type if needed
-            expiresIn: 3600 // Token expires in 1 hour (3600 seconds)
+            expiresIn: 1000 // Token expires in 1 hour (3600 seconds)
         )
 
         print("AccessToken created successfully")
