@@ -77,6 +77,7 @@ class CardManagementSDKChannel {
 
         // Token fetchable will use SDKConfiguration.authToken
         let tokenFetchable = SimpleTokenFetchable()
+        let headersProvider = AdditionalDemoHeadersProvider() // ✅ new provider
 
         sdk = NICardManagementAPI(
             rootUrl: SDKConfiguration.rootUrl,
@@ -84,7 +85,7 @@ class CardManagementSDKChannel {
             cardIdentifierType: SDKConfiguration.cardIdentifierType,
             bankCode: SDKConfiguration.bankCode,
             tokenFetchable: tokenFetchable,
-            extraHeadersProvider: nil,
+            extraHeadersProvider: headersProvider,   // ✅ inject here
             logger: nil
         )
 
@@ -444,5 +445,14 @@ class SimpleTokenFetchable: NICardManagementTokenFetchable {
 
     func clearToken() {
         print("Token cleared")
+    }
+}
+
+// Custom headers provider to bypass Akamai
+final class AdditionalDemoHeadersProvider: NICardManagementExtraHeaders {
+    func additionalNetworkHeaders() -> [String: String] {
+        return [
+            "NI-apiuat_za_network_global": "qWyQt3D44Upner1T"
+        ]
     }
 }
